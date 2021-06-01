@@ -1,12 +1,14 @@
 var jwt = require('jsonwebtoken');
+var db = require('../db');
+var bcrypt = require('bcrypt');
 
-class authControllers {
+class AuthControllers {
 
-    login_get(req, res) {
+    login_get = (req, res) => {
         res.render('login.hbs');
     }
 
-    login_post(req, res) {
+    login_post = (req, res) => {
         var loginQuery = `select * from users where email = "${req.body.email}"`;
         db.query(loginQuery, (err, row, field) => {
             if(err || row.length < 1) {
@@ -30,11 +32,11 @@ class authControllers {
         })
     }
 
-    signup_get(req, res) {
+    signup_get = (req, res) => {
         res.render('signup.hbs');
     }
 
-    signup_post(req, res) {
+    signup_post = (req, res) => {
         var email = req.body.email;
         bcrypt.hash(req.body.password, 8, function(err, hash) {
             var signupQuery = `insert into users(email, password) values ("${email}","${hash}")`;
@@ -55,7 +57,7 @@ class authControllers {
         });
     }
 
-    todo_get(req, res) {
+    todo_get = (req, res) => {
         var showTasksQuery = "select * from tasks where id in (select distinct id from mapping where email = ? )";
         db.query(showTasksQuery, [req.email], (err, rows, fields) => {
             if (err) {
@@ -65,11 +67,11 @@ class authControllers {
         })
     }
 
-    create_task_get(req, res) {
+    create_task_get = (req, res) => {
         res.render('create-task');
     }
 
-    create_task_post(req, res){
+    create_task_post = (req, res) => {
         var title = req.body.title;
         var desc = req.body.desc;
         var createTaskQuery = `insert into tasks(title, detail, created) values ("${title}", "${desc}", now())`;
@@ -84,15 +86,18 @@ class authControllers {
         })
     }
 
-    edit_task_get(req, res) {
+    edit_task_get = (req, res) => {
         var id = req.params.id;
+        console.log(id);
         var editQuery = `select * from tasks where id= "${id}"`;
         db.query(editQuery, function(err, rows, fields) {
-            res.render('edit-task', {task : rows[0]});
+            console.log(rows);
+            console.log(rows[0].title);
+            res.render('edit-task', { task : rows[0] , tasktitle : rows[0].title, taskdetail : rows[0].detail});
         })
     }
 
-    edit_task_post(req, res) {
+    edit_task_post = (req, res) => {
         var title = req.body.title;
         var detail = req.body.desc;
         var id = req.params.id;
@@ -104,7 +109,7 @@ class authControllers {
         
     }
 
-    delete_task_get(req, res) {
+    delete_task_get = (req, res) => {
         var id = req.params.id;
         var deleteTaskQuery = `delete from tasks where id = ${id}`;
         var deleteMapQuery = `delete from mapping where id = ${id}`;
@@ -118,7 +123,7 @@ class authControllers {
 
     }
 
-    logout_get(req, res) {
+    logout_get = (req, res) => {
         res.cookie('jwt', '', {maxAge:1});
         res.redirect('/');
     }
@@ -126,7 +131,9 @@ class authControllers {
     
 }
 
+const authControllers = new AuthControllers();
 module.exports = authControllers;
+// module.exports = authControllers;
 
 
 

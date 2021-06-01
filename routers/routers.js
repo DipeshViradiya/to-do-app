@@ -14,7 +14,7 @@ router.get('/todo/create-task', requireAuth, authController.create_task_get);
 router.post('/todo/create-task', requireAuth, authController.create_task_post);
 router.get('/todo/edit-task/:id', requireAuth, authController.edit_task_get);
 router.post('/todo/edit-task/:id', requireAuth, authController.edit_task_post);
-router.get('/delete', requireAuth, authController.delete_get);
+router.get('/todo/delete-task/:id', requireAuth, authController.delete_task_get);
 router.get('/logout', requireAuth, authController.logout_get);
 
 module.exports = router;
