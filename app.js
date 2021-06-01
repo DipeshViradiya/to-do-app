@@ -21,7 +21,9 @@ var routers = require('./routers/routers');
 const authController = require('./controllers/authControllers');
 
 
+
 app.use('/', routers);
+
 
 // app.get('/', (req, res) => {
 //     res.render('login.hbs');
